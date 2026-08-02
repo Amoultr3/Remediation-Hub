@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f4ef">
+  <meta name="description" content="A calm nursing remediation workspace.">
+  <title>Remediation Hub</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Remediation Hub home">
+      <span class="brand-mark">RH</span>
+      <span><strong>Remediation Hub</strong><small>nursing study workspace</small></span>
+    </a>
+    <button id="newQuestionBtn" class="primary">+ Add question</button>
+  </header>
+
+  <div class="app-shell">
+    <nav class="sidebar" aria-label="Main navigation">
+      <button class="nav-item active" data-view="records">Records <span id="recordCount">0</span></button>
+      <button class="nav-item" data-view="knowledge">Knowledge</button>
+      <button class="nav-item" data-view="review">Review <span id="reviewCount">0</span></button>
+      <button class="nav-item" data-view="progress">Progress</button>
+      <div class="sidebar-note">
+        <span>Version 1</span>
+        <p>Core question workflow</p>
+      </div>
+    </nav>
+
+    <main>
+      <section id="recordsView" class="view active">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">QUESTION RECORDS</p>
+            <h1>What are you working through?</h1>
+            <p class="subtle">Capture the question, your thinking, and the clue you missed.</p>
+          </div>
+          <button id="sessionBtn" class="secondary">Start session</button>
+        </div>
+
+        <section id="sessionBanner" class="session-banner hidden">
+          <div><strong>Session in progress</strong><span id="sessionQuestionCount">0 questions added</span></div>
+          <button id="endSessionBtn" class="text-button">End and grade session</button>
+        </section>
+
+        <div class="summary-grid" aria-label="Question summary">
+          <article><span>All records</span><strong id="allStat">0</strong></article>
+          <article><span>Needs review</span><strong id="missedStat">0</strong></article>
+          <article><span>Mastered</span><strong id="masteredStat">0</strong></article>
+        </div>
+
+        <div class="toolbar">
+          <label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search questions or topics"></label>
+          <div class="filters" role="group" aria-label="Filter records">
+            <button class="filter active" data-filter="all">All</button>
+            <button class="filter" data-filter="review">Needs review</button>
+            <button class="filter" data-filter="mastered">Mastered</button>
+          </div>
+        </div>
+
+        <div id="recordsList" class="records-list"></div>
+        <div id="emptyState" class="empty-state">
+          <div class="paper-icon">+</div>
+          <h2>Add your first question</h2>
+          <p>Start with a question you missed or were unsure about. Everything can be edited later.</p>
+          <button class="primary" data-open-question>+ Add question</button>
+        </div>
+      </section>
+
+      <section id="knowledgeView" class="view placeholder-view">
+        <p class="eyebrow">KNOWLEDGE</p><h1>Linked topic notes</h1>
+        <p>In Version 2, your question reports will connect to reusable pathophysiology, fundamentals, pharmacology, and lab notes.</p>
+        <span class="coming-soon">Planned for Version 2</span>
+      </section>
+
+      <section id="reviewView" class="view placeholder-view">
+        <p class="eyebrow">REVIEW</p><h1>Your remediation queue</h1>
+        <p id="reviewMessage">Questions marked for review will appear here.</p>
+        <button class="secondary" data-view-link="records">Open records</button>
+      </section>
+
+      <section id="progressView" class="view placeholder-view">
+        <p class="eyebrow">PROGRESS</p><h1>Patterns, not pressure</h1>
+        <p>Version 2 will summarize recurring topics and reasoning mistakes after the core workflow is approved.</p>
+        <span class="coming-soon">Planned for Version 2</span>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="questionDialog">
+    <form id="questionForm" method="dialog">
+      <div class="dialog-heading">
+        <div><p class="eyebrow">QUESTION RECORD</p><h2 id="dialogTitle">Add a question</h2></div>
+        <button type="button" id="closeDialogBtn" class="icon-button" aria-label="Close">×</button>
+      </div>
+      <input id="questionId" type="hidden">
+      <label>Topic <input id="topicInput" placeholder="e.g., Cardiac, Pharmacology"></label>
+      <label>Question <textarea id="questionInput" rows="4" required placeholder="Paste or type the question"></textarea></label>
+
+      <fieldset>
+        <legend>Answer choices</legend>
+        <p class="field-help">Select one circle for your answer and one check for the correct answer.</p>
+        <div id="choicesEditor"></div>
+        <button type="button" id="addChoiceBtn" class="text-button">+ Add another choice</button>
+      </fieldset>
+
+      <div class="two-column">
+        <label>Confidence
+          <select id="confidenceInput"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+        </label>
+        <label>Status
+          <select id="statusInput"><option value="review">Needs review</option><option value="mastered">Mastered</option></select>
+        </label>
+      </div>
+      <label>Why did you choose your answer? <textarea id="reasoningInput" rows="3" placeholder="Write what you were thinking"></textarea></label>
+      <label>What clue did you miss or notice? <textarea id="clueInput" rows="2" placeholder="Optional"></textarea></label>
+      <label>Additional notes <textarea id="notesInput" rows="3" placeholder="Optional"></textarea></label>
+      <label class="attachment-field">Add an image or diagram <input id="attachmentInput" type="file" accept="image/*"><small>One image, up to 1.5 MB. Stored only on this device in Version 1.</small></label>
+      <div id="attachmentPreview" class="attachment-preview hidden"></div>
+
+      <div class="dialog-actions">
+        <button type="button" id="deleteQuestionBtn" class="danger hidden">Delete</button>
+        <span></span>
+        <button type="button" id="cancelDialogBtn" class="secondary">Cancel</button>
+        <button type="submit" class="primary">Save record</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="gradeDialog" class="small-dialog">
+    <div class="dialog-heading"><div><p class="eyebrow">SESSION COMPLETE</p><h2>Session summary</h2></div><button class="icon-button" data-close-grade>×</button></div>
+    <div id="gradeSummary"></div>
+    <button class="primary full-width" data-close-grade>Return to records</button>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
