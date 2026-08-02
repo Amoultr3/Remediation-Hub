@@ -352,7 +352,8 @@ function importExtensionRecord(payload) {
     attachments: Array.isArray(payload.attachments)
       ? payload.attachments.slice(0, 8).filter((item) => item && typeof item.dataUrl === 'string' && item.dataUrl.startsWith('data:image/')).map((item) => ({ dataUrl: item.dataUrl, name: String(item.name || 'Captured image'), type: String(item.type || 'image/jpeg') }))
       : [],
-    sessionId: state.session?.id || null,
+    sessionId: String(payload.sessionId || '').trim() || state.session?.id || null,
+    sessionTopic: String(payload.sessionTopic || '').trim() || null,
     createdAt: payload.createdAt || now,
     updatedAt: now
   };

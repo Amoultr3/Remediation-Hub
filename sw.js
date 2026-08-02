@@ -1,4 +1,4 @@
-const CACHE_NAME = 'remediation-hub-v1-3-floating-ocr';
+const CACHE_NAME = 'remediation-hub-v1-3-3-capture-sessions';
 const APP_FILES = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icons/icon.svg'];
 
 self.addEventListener('install', (event) => {
