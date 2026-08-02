@@ -1,4 +1,4 @@
-const CACHE_NAME = 'remediation-hub-v1-practical';
+const CACHE_NAME = 'remediation-hub-v1-2-popup-extension';
 const APP_FILES = ['./', './index.html', './styles.css', './app.js', './manifest.webmanifest', './icons/icon.svg'];
 
 self.addEventListener('install', (event) => {

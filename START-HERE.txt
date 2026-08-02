@@ -1,0 +1,30 @@
+REMEDIATION HUB VERSION 1.2
+CHROME POPUP CAPTURE
+
+PART 1 — UPDATE THE GITHUB PAGES APP
+
+1. Open your Remediation-Hub repository on GitHub.
+2. Open the github-update folder from this package.
+3. Upload all four files in that folder to the ROOT of the repository.
+4. Confirm that GitHub replaces the matching files, then commit the changes.
+5. Wait for GitHub Pages to finish deploying.
+6. Open https://amoultr3.github.io/Remediation-Hub/ and refresh twice.
+
+PART 2 — INSTALL THE CHROME EXTENSION
+
+1. Keep the chrome-extension folder on your computer.
+2. Open chrome://extensions in Chrome.
+3. Turn on Developer mode.
+4. Select Load unpacked.
+5. Select the chrome-extension folder.
+6. Pin Remediation Hub Capture from the Extensions menu.
+
+PART 3 — TEST IT
+
+1. On a normal webpage containing an authorized practice question, highlight the question and answer choices.
+2. Select the Remediation Hub extension icon.
+3. Check the captured question and choices. Add your answer and reasoning.
+4. Select Save to Hub.
+5. Remediation Hub should open with the new record selected.
+
+Use the extension only with practice questions or material you are authorized to capture. It is not designed to bypass secure or proctored exam software.

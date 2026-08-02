@@ -298,6 +298,62 @@ function startSession() {
   openQuestion();
 }
 
+function importExtensionRecord(payload) {
+  if (!payload || payload.source !== 'remediation-hub-extension' || !payload.externalId) return;
+  if (state.records.some((record) => record.externalId === payload.externalId)) {
+    window.postMessage({ type: 'REMEDIATION_IMPORT_COMPLETE', externalId: payload.externalId }, window.location.origin);
+    return;
+  }
+
+  const question = String(payload.question || '').trim();
+  const choices = Array.isArray(payload.choices)
+    ? payload.choices.map((choice) => String(choice || '').trim()).filter(Boolean).slice(0, 8)
+    : [];
+  if (!question || choices.length < 2) return;
+
+  const selectedAnswer = Number.isInteger(payload.selectedAnswer) && payload.selectedAnswer < choices.length
+    ? payload.selectedAnswer
+    : null;
+  const correctAnswer = Number.isInteger(payload.correctAnswer) && payload.correctAnswer < choices.length
+    ? payload.correctAnswer
+    : null;
+  const id = uid();
+  const now = new Date().toISOString();
+  const record = {
+    id,
+    externalId: payload.externalId,
+    source: 'chrome-extension',
+    topic: String(payload.topic || '').trim(),
+    question,
+    choices,
+    selectedAnswer,
+    correctAnswer,
+    confidence: ['low', 'medium', 'high'].includes(payload.confidence) ? payload.confidence : 'medium',
+    status: 'review',
+    reasoning: String(payload.reasoning || '').trim(),
+    clue: String(payload.clue || '').trim(),
+    notes: String(payload.notes || '').trim(),
+    attachment: null,
+    sessionId: state.session?.id || null,
+    createdAt: payload.createdAt || now,
+    updatedAt: now
+  };
+
+  state.records.unshift(record);
+  if (!saveState()) return;
+  selectedRecordId = id;
+  setView('records');
+  render();
+  $('#detailPanel').classList.add('open');
+  toast('Question captured from Chrome.');
+  window.postMessage({ type: 'REMEDIATION_IMPORT_COMPLETE', externalId: payload.externalId }, window.location.origin);
+}
+
+window.addEventListener('message', (event) => {
+  if (event.source !== window || event.origin !== window.location.origin) return;
+  if (event.data?.type === 'REMEDIATION_EXTENSION_RECORD') importExtensionRecord(event.data.record);
+});
+
 function endSession() {
   if (!state.session) return;
   const sessionRecords = state.records.filter((r) => r.sessionId === state.session.id);
@@ -341,3 +397,4 @@ $$('[data-close-grade]').forEach((button) => button.addEventListener('click', ()
 
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
 render();
+window.postMessage({ type: 'REMEDIATION_HUB_READY' }, window.location.origin);

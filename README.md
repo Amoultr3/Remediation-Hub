@@ -1,4 +1,4 @@
-# Remediation Hub — Version 1 Practical Workspace
+# Remediation Hub — Version 1.2 Practical Workspace
 
 This upload-ready static PWA is designed for GitHub Pages.
 
@@ -13,5 +13,8 @@ This upload-ready static PWA is designed for GitHub Pages.
 - Study sessions and session grading
 - Search, filters, and mastery status
 - Local browser saving and offline support
+- Chrome extension popup import bridge
 
 Upload the contents of this folder to the root of the `Remediation-Hub` repository. Existing Version 1 browser data is preserved because this update keeps the same local storage key.
+
+The companion Chrome extension is distributed separately. Load its folder from `chrome://extensions` using **Load unpacked** after enabling Developer mode.
