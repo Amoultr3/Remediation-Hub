@@ -54,6 +54,16 @@ function answerText(record, index) {
   return index === null || index === undefined ? 'Not selected' : (record.choices[index] || 'Not selected');
 }
 
+function selectedIndexes(record) {
+  if (Array.isArray(record.selectedAnswers)) return record.selectedAnswers.filter((index) => Number.isInteger(index));
+  return Number.isInteger(record.selectedAnswer) ? [record.selectedAnswer] : [];
+}
+
+function selectedAnswerText(record) {
+  const indexes = selectedIndexes(record);
+  return indexes.length ? indexes.map((index) => record.choices[index]).filter(Boolean).join('; ') : 'Not selected';
+}
+
 function render() {
   const query = $('#searchInput').value.trim().toLowerCase();
   const filtered = state.records.filter((record) => {
@@ -79,8 +89,7 @@ function render() {
             <div class="record-meta">
               <span>${escapeHtml(record.topic || 'Uncategorized')}</span>
               <span>${formatDate(record.updatedAt || record.createdAt)}</span>
-              <span>${escapeHtml(record.confidence || 'medium')} confidence</span>
-              ${record.attachment ? '<span>Image</span>' : ''}
+              ${(record.attachments?.length || record.attachment) ? `<span>${record.attachments?.length || 1} image${(record.attachments?.length || 1) === 1 ? '' : 's'}</span>` : ''}
             </div>
           </div>
           <div class="record-status">
@@ -105,7 +114,8 @@ function renderDetail() {
   $('#detailContent').classList.toggle('hidden', !record);
   if (!record) return;
 
-  const selectedCorrect = record.selectedAnswer !== null && record.selectedAnswer === record.correctAnswer;
+  const selected = selectedIndexes(record);
+  const selectedCorrect = selected.length === 1 && record.correctAnswer !== null && selected[0] === record.correctAnswer;
   const recordNumber = state.records.length - state.records.findIndex((item) => item.id === record.id);
   $('#detailContent').innerHTML = `
     <div class="detail-topline">
@@ -117,14 +127,15 @@ function renderDetail() {
     <h2 class="detail-question">${escapeHtml(record.question)}</h2>
     <div class="answer-list">
       ${record.choices.map((choice, index) => `
-        <div class="answer-choice ${record.selectedAnswer === index ? 'mine' : ''} ${record.correctAnswer === index ? 'correct' : ''}">
+        <div class="answer-choice ${selected.includes(index) ? 'mine' : ''} ${record.correctAnswer === index ? 'correct' : ''}">
           <span class="answer-letter">${String.fromCharCode(65 + index)}</span><span>${escapeHtml(choice || 'Blank choice')}</span>
-        </div>`).join('')}
+        </div>
+        ${record.optionNotes?.[index] ? `<div class="note-box"><strong>${selected.includes(index) ? 'Why I selected it' : 'Why I did not select it'}:</strong> ${escapeHtml(record.optionNotes[index])}</div>` : ''}`).join('')}
     </div>
     <hr class="detail-rule">
     <section class="detail-section">
       <label>Your answer</label>
-      <div class="answer-box ${selectedCorrect ? 'right' : 'wrong'}">${escapeHtml(answerText(record, record.selectedAnswer))}<strong>${selectedCorrect ? 'Correct' : 'Incorrect'}</strong></div>
+      <div class="answer-box ${record.correctAnswer === null ? '' : (selectedCorrect ? 'right' : 'wrong')}">${escapeHtml(selectedAnswerText(record))}<strong>${record.correctAnswer === null ? 'Not graded yet' : (selectedCorrect ? 'Correct' : 'Incorrect')}</strong></div>
     </section>
     <section class="detail-section">
       <label>Correct answer</label>
@@ -139,7 +150,7 @@ function renderDetail() {
       <div class="note-box ${record.clue ? '' : 'empty-note'}">${escapeHtml(record.clue || 'No missed clue added yet.')}</div>
     </section>
     ${record.notes ? `<section class="detail-section"><label>Additional notes</label><div class="note-box">${escapeHtml(record.notes)}</div></section>` : ''}
-    ${record.attachment ? `<section class="detail-section"><label>Attached image or diagram</label><img class="detail-image" src="${record.attachment}" alt="Question attachment"></section>` : ''}
+    ${(record.attachments?.length || record.attachment) ? `<section class="detail-section"><label>Attached images or diagrams</label>${(record.attachments?.length ? record.attachments.map((item) => item.dataUrl || item) : [record.attachment]).map((src, index) => `<img class="detail-image" src="${src}" alt="Question attachment ${index + 1}">`).join('')}</section>` : ''}
     <div class="detail-footer">
       <button type="button" class="primary" data-edit-selected>Edit record</button>
       <button type="button" class="secondary" data-toggle-mastery>${record.status === 'mastered' ? 'Return to review' : '✓ Mark remediated'}</button>
@@ -201,7 +212,6 @@ function openQuestion(record = null) {
   $('#dialogTitle').textContent = record ? 'Edit question' : 'Add a question';
   $('#topicInput').value = record?.topic || '';
   $('#questionInput').value = record?.question || '';
-  $('#confidenceInput').value = record?.confidence || 'medium';
   $('#statusInput').value = record?.status || 'review';
   $('#reasoningInput').value = record?.reasoning || '';
   $('#clueInput').value = record?.clue || '';
@@ -248,12 +258,12 @@ function saveQuestion() {
     choices,
     selectedAnswer: selectedNode ? Number(selectedNode.value) : null,
     correctAnswer: correctNode ? Number(correctNode.value) : null,
-    confidence: $('#confidenceInput').value,
     status: $('#statusInput').value,
     reasoning: $('#reasoningInput').value.trim(),
     clue: $('#clueInput').value.trim(),
     notes: $('#notesInput').value.trim(),
     attachment: pendingAttachment,
+    attachments: existing?.attachments || [],
     sessionId: existing?.sessionId || state.session?.id || null,
     createdAt: existing?.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -307,13 +317,16 @@ function importExtensionRecord(payload) {
 
   const question = String(payload.question || '').trim();
   const choices = Array.isArray(payload.choices)
-    ? payload.choices.map((choice) => String(choice || '').trim()).filter(Boolean).slice(0, 8)
+    ? payload.choices.map((choice) => String(choice || '').trim()).slice(0, 8)
     : [];
-  if (!question || choices.length < 2) return;
+  if (!question || choices.filter(Boolean).length < 2) return;
 
   const selectedAnswer = Number.isInteger(payload.selectedAnswer) && payload.selectedAnswer < choices.length
     ? payload.selectedAnswer
     : null;
+  const selectedAnswers = Array.isArray(payload.selectedAnswers)
+    ? [...new Set(payload.selectedAnswers.filter((index) => Number.isInteger(index) && index >= 0 && index < choices.length))]
+    : (selectedAnswer === null ? [] : [selectedAnswer]);
   const correctAnswer = Number.isInteger(payload.correctAnswer) && payload.correctAnswer < choices.length
     ? payload.correctAnswer
     : null;
@@ -326,14 +339,19 @@ function importExtensionRecord(payload) {
     topic: String(payload.topic || '').trim(),
     question,
     choices,
-    selectedAnswer,
+    selectedAnswer: selectedAnswers.length === 1 ? selectedAnswers[0] : null,
+    selectedAnswers,
+    selectAll: Boolean(payload.selectAll),
     correctAnswer,
-    confidence: ['low', 'medium', 'high'].includes(payload.confidence) ? payload.confidence : 'medium',
     status: 'review',
     reasoning: String(payload.reasoning || '').trim(),
+    optionNotes: Array.isArray(payload.optionNotes) ? payload.optionNotes.slice(0, choices.length).map((note) => String(note || '').trim()) : [],
     clue: String(payload.clue || '').trim(),
     notes: String(payload.notes || '').trim(),
     attachment: null,
+    attachments: Array.isArray(payload.attachments)
+      ? payload.attachments.slice(0, 8).filter((item) => item && typeof item.dataUrl === 'string' && item.dataUrl.startsWith('data:image/')).map((item) => ({ dataUrl: item.dataUrl, name: String(item.name || 'Captured image'), type: String(item.type || 'image/jpeg') }))
+      : [],
     sessionId: state.session?.id || null,
     createdAt: payload.createdAt || now,
     updatedAt: now
