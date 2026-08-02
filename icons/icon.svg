@@ -1,6 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#325f55"/>
-  <path d="M146 112h220v288H146z" fill="#fffefa"/>
-  <path d="M192 180h128M192 232h128M192 284h82" stroke="#325f55" stroke-width="22" stroke-linecap="square"/>
-  <path d="m282 341 23 23 49-58" fill="none" stroke="#a85c45" stroke-width="20" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect width="512" height="512" rx="72" fill="#596cc4"/>
+  <text x="256" y="302" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="190" font-weight="700">RH</text>
 </svg>

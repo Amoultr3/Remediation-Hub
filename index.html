@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f6f4ef">
+  <meta name="theme-color" content="#f7f7f6">
   <meta name="description" content="A calm nursing remediation workspace.">
   <title>Remediation Hub</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -11,84 +11,90 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Remediation Hub home">
-      <span class="brand-mark">RH</span>
-      <span><strong>Remediation Hub</strong><small>nursing study workspace</small></span>
-    </a>
-    <button id="newQuestionBtn" class="primary">+ Add question</button>
-  </header>
+  <div class="workspace-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Remediation Hub home">
+        <span class="brand-mark">RH</span>
+        <strong>Remediation Hub</strong>
+      </a>
 
-  <div class="app-shell">
-    <nav class="sidebar" aria-label="Main navigation">
-      <button class="nav-item active" data-view="records">Records <span id="recordCount">0</span></button>
-      <button class="nav-item" data-view="knowledge">Knowledge</button>
-      <button class="nav-item" data-view="review">Review <span id="reviewCount">0</span></button>
-      <button class="nav-item" data-view="progress">Progress</button>
-      <div class="sidebar-note">
-        <span>Version 1</span>
-        <p>Core question workflow</p>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="records"><span class="nav-icon">▤</span><span>Records</span></button>
+        <button class="nav-item" data-view="knowledge"><span class="nav-icon">□</span><span>Knowledge</span></button>
+        <button class="nav-item" data-view="review"><span class="nav-icon">✓</span><span>Review</span><span id="reviewCount" class="count-badge">0</span></button>
+        <button class="nav-item" data-view="progress"><span class="nav-icon">↗</span><span>Progress</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="nav-item muted" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        <span class="version-label">Version 1 · Local saving</span>
       </div>
-    </nav>
+    </aside>
 
-    <main>
+    <main class="main-column">
       <section id="recordsView" class="view active">
-        <div class="page-heading">
+        <header class="page-header">
           <div>
             <p class="eyebrow">QUESTION RECORDS</p>
-            <h1>What are you working through?</h1>
-            <p class="subtle">Capture the question, your thinking, and the clue you missed.</p>
+            <h1>Today’s review</h1>
           </div>
-          <button id="sessionBtn" class="secondary">Start session</button>
-        </div>
+          <button id="newQuestionBtn" class="primary">+ Capture question</button>
+        </header>
 
         <section id="sessionBanner" class="session-banner hidden">
           <div><strong>Session in progress</strong><span id="sessionQuestionCount">0 questions added</span></div>
-          <button id="endSessionBtn" class="text-button">End and grade session</button>
+          <button id="endSessionBtn" class="text-button">End and grade</button>
         </section>
 
-        <div class="summary-grid" aria-label="Question summary">
-          <article><span>All records</span><strong id="allStat">0</strong></article>
-          <article><span>Needs review</span><strong id="missedStat">0</strong></article>
-          <article><span>Mastered</span><strong id="masteredStat">0</strong></article>
+        <div class="control-row">
+          <label class="select-wrap"><span class="sr-only">Question status</span>
+            <select id="statusFilter"><option value="all">All records</option><option value="review">Needs review</option><option value="mastered">Mastered</option></select>
+          </label>
+          <button id="sessionBtn" class="secondary">Start session</button>
+          <label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search questions or topics..."></label>
         </div>
 
-        <div class="toolbar">
-          <label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search questions or topics"></label>
-          <div class="filters" role="group" aria-label="Filter records">
-            <button class="filter active" data-filter="all">All</button>
-            <button class="filter" data-filter="review">Needs review</button>
-            <button class="filter" data-filter="mastered">Mastered</button>
-          </div>
+        <div class="list-heading">
+          <strong><span id="recordCount">0</span> questions</strong>
+          <span>Sort: Newest</span>
         </div>
 
         <div id="recordsList" class="records-list"></div>
         <div id="emptyState" class="empty-state">
-          <div class="paper-icon">+</div>
-          <h2>Add your first question</h2>
-          <p>Start with a question you missed or were unsure about. Everything can be edited later.</p>
-          <button class="primary" data-open-question>+ Add question</button>
+          <div class="empty-icon">+</div>
+          <h2>No questions captured yet</h2>
+          <p>Add a missed or uncertain question. Your answer, reasoning, notes, and image can stay together in one record.</p>
+          <button class="primary" data-open-question>+ Capture your first question</button>
         </div>
       </section>
 
       <section id="knowledgeView" class="view placeholder-view">
         <p class="eyebrow">KNOWLEDGE</p><h1>Linked topic notes</h1>
-        <p>In Version 2, your question reports will connect to reusable pathophysiology, fundamentals, pharmacology, and lab notes.</p>
-        <span class="coming-soon">Planned for Version 2</span>
+        <p>Your larger pathophysiology, nursing fundamentals, pharmacology, and lab notes will live here in Version 2.</p>
+        <span class="coming-soon">Coming in Version 2</span>
       </section>
 
       <section id="reviewView" class="view placeholder-view">
-        <p class="eyebrow">REVIEW</p><h1>Your remediation queue</h1>
+        <p class="eyebrow">REVIEW</p><h1>Remediation queue</h1>
         <p id="reviewMessage">Questions marked for review will appear here.</p>
         <button class="secondary" data-view-link="records">Open records</button>
       </section>
 
       <section id="progressView" class="view placeholder-view">
         <p class="eyebrow">PROGRESS</p><h1>Patterns, not pressure</h1>
-        <p>Version 2 will summarize recurring topics and reasoning mistakes after the core workflow is approved.</p>
-        <span class="coming-soon">Planned for Version 2</span>
+        <p>Recurring topics and reasoning mistakes will be summarized here after the core question workflow is approved.</p>
+        <span class="coming-soon">Coming in Version 2</span>
       </section>
     </main>
+
+    <aside id="detailPanel" class="detail-panel" aria-label="Selected question details">
+      <div id="detailEmpty" class="detail-empty">
+        <span class="detail-empty-icon">▤</span>
+        <h2>Select a question</h2>
+        <p>Open a record to review your answer, the correct answer, your reasoning, and the clue you missed.</p>
+      </div>
+      <div id="detailContent" class="detail-content hidden"></div>
+    </aside>
   </div>
 
   <dialog id="questionDialog">
@@ -104,6 +110,7 @@
       <fieldset>
         <legend>Answer choices</legend>
         <p class="field-help">Select one circle for your answer and one check for the correct answer.</p>
+        <div class="choice-key"><span>Mine</span><span>Key</span><span>Answer choice</span></div>
         <div id="choicesEditor"></div>
         <button type="button" id="addChoiceBtn" class="text-button">+ Add another choice</button>
       </fieldset>
