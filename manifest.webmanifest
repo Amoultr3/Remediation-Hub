@@ -1,0 +1,13 @@
+{
+  "name": "Remediation Hub",
+  "short_name": "Remediation",
+  "description": "A calm nursing remediation workspace.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#f6f4ef",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
