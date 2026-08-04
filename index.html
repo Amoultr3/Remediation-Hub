@@ -27,7 +27,7 @@
 
       <div class="sidebar-bottom">
         <button class="nav-item muted" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
-        <span class="version-label">Version 1.3 · Floating OCR capture</span>
+        <span class="version-label">Version 1.3.5 · Session export</span>
       </div>
     </aside>
 
@@ -51,6 +51,7 @@
             <select id="statusFilter"><option value="all">All records</option><option value="review">Needs review</option><option value="mastered">Mastered</option></select>
           </label>
           <button id="sessionBtn" class="secondary">Start session</button>
+          <button id="exportSessionBtn" class="secondary">Export session</button>
           <label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search questions or topics..."></label>
         </div>
 
@@ -139,6 +140,16 @@
     <div class="dialog-heading"><div><p class="eyebrow">SESSION COMPLETE</p><h2>Session summary</h2></div><button class="icon-button" data-close-grade>×</button></div>
     <div id="gradeSummary"></div>
     <button class="primary full-width" data-close-grade>Return to records</button>
+  </dialog>
+
+  <dialog id="exportDialog" class="small-dialog">
+    <div class="dialog-heading">
+      <div><p class="eyebrow">EXPORT FOR CHATGPT</p><h2>Choose a session</h2></div>
+      <button type="button" class="icon-button" data-close-export aria-label="Close">×</button>
+    </div>
+    <p class="field-help">Download one completed session as a JSON file, then upload that file to ChatGPT.</p>
+    <div id="exportSessionList"></div>
+    <button type="button" class="secondary full-width" data-close-export>Cancel</button>
   </dialog>
 
   <div id="toast" role="status" aria-live="polite"></div>

@@ -64,6 +64,74 @@ function selectedAnswerText(record) {
   return indexes.length ? indexes.map((index) => record.choices[index]).filter(Boolean).join('; ') : 'Not selected';
 }
 
+function sessionGroups() {
+  const groups = new Map();
+  state.records.forEach((record) => {
+    const key = record.sessionId || 'unassigned';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(record);
+  });
+  return [...groups.entries()]
+    .map(([id, records]) => {
+      const newest = records.reduce((latest, record) => {
+        const value = record.updatedAt || record.createdAt || '';
+        return value > latest ? value : latest;
+      }, '');
+      const topic = records.find((record) => record.sessionTopic)?.sessionTopic
+        || records.find((record) => record.topic)?.topic
+        || (id === 'unassigned' ? 'Questions without a session' : 'Untitled session');
+      return { id, records, newest, topic };
+    })
+    .sort((a, b) => b.newest.localeCompare(a.newest));
+}
+
+function openExportDialog() {
+  const groups = sessionGroups();
+  if (!groups.length) return toast('Capture a question before exporting.');
+  $('#exportSessionList').innerHTML = groups.map((group) => `
+    <div class="grade-stat">
+      <span><strong>${escapeHtml(group.topic)}</strong><br>${formatDate(group.newest)} · ${group.records.length} question${group.records.length === 1 ? '' : 's'}</span>
+      <button type="button" class="primary" data-export-session="${escapeHtml(group.id)}">Export</button>
+    </div>`).join('');
+  $('#exportDialog').showModal();
+}
+
+function safeFilename(value) {
+  return String(value || 'session')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48) || 'session';
+}
+
+function exportSession(sessionId) {
+  const group = sessionGroups().find((item) => item.id === sessionId);
+  if (!group) return toast('That session could not be found.');
+  const payload = {
+    format: 'remediation-hub-session-export',
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    session: {
+      id: group.id === 'unassigned' ? null : group.id,
+      topic: group.topic,
+      questionCount: group.records.length,
+      latestActivityAt: group.newest
+    },
+    records: group.records
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `remediation-hub-${safeFilename(group.topic)}-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  $('#exportDialog').close();
+  toast(`${group.records.length} questions exported.`);
+}
+
 function render() {
   const query = $('#searchInput').value.trim().toLowerCase();
   const filtered = state.records.filter((record) => {
@@ -394,6 +462,7 @@ $$('[data-view-link]').forEach((button) => button.addEventListener('click', () =
 $('#newQuestionBtn').addEventListener('click', () => openQuestion());
 $$('[data-open-question]').forEach((button) => button.addEventListener('click', () => openQuestion()));
 $('#sessionBtn').addEventListener('click', startSession);
+$('#exportSessionBtn').addEventListener('click', openExportDialog);
 $('#endSessionBtn').addEventListener('click', endSession);
 $('#addChoiceBtn').addEventListener('click', () => addChoice());
 $('#closeDialogBtn').addEventListener('click', () => $('#questionDialog').close());
@@ -413,6 +482,11 @@ $('#detailContent').addEventListener('click', (event) => {
   if (event.target.closest('[data-close-detail]')) $('#detailPanel').classList.remove('open');
 });
 $$('[data-close-grade]').forEach((button) => button.addEventListener('click', () => $('#gradeDialog').close()));
+$$('[data-close-export]').forEach((button) => button.addEventListener('click', () => $('#exportDialog').close()));
+$('#exportSessionList').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-export-session]');
+  if (button) exportSession(button.dataset.exportSession);
+});
 
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
 render();
