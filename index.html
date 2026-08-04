@@ -8,7 +8,7 @@
   <title>Remediation Hub</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=1.4.0">
 </head>
 <body>
   <div class="workspace-shell">
@@ -27,7 +27,7 @@
 
       <div class="sidebar-bottom">
         <button class="nav-item muted" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
-        <span class="version-label">Version 1.3.6 · Session export</span>
+        <span class="version-label">Version 1.4 · Clean update</span>
       </div>
     </aside>
 
@@ -142,17 +142,7 @@
     <button class="primary full-width" data-close-grade>Return to records</button>
   </dialog>
 
-  <dialog id="exportDialog" class="small-dialog">
-    <div class="dialog-heading">
-      <div><p class="eyebrow">EXPORT FOR CHATGPT</p><h2>Choose a session</h2></div>
-      <button type="button" class="icon-button" data-close-export aria-label="Close">×</button>
-    </div>
-    <p class="field-help">Download one completed session as a JSON file, then upload that file to ChatGPT.</p>
-    <div id="exportSessionList"></div>
-    <button type="button" class="secondary full-width" data-close-export>Cancel</button>
-  </dialog>
-
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="app-v1.3.6.js"></script>
+  <script src="app-v1.4.js?v=1.4.0"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-const CACHE_NAME = 'remediation-hub-v1-3-6-network-first';
-const APP_FILES = ['./index.html', './styles.css', './app-v1.3.6.js', './manifest.webmanifest', './icons/icon.svg'];
+const CACHE_NAME = 'remediation-hub-v1-4-0';
+const APP_FILES = ['./index.html', './styles.css', './app-v1.4.js?v=1.4.0', './manifest.webmanifest', './icons/icon.svg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES)));

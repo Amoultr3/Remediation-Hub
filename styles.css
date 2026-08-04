@@ -55,7 +55,7 @@ h2 { margin: 0; letter-spacing: -.02em; }
 .session-banner { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; padding: 11px 13px; border: 1px solid #d7d1b7; background: #fffdf4; }
 .session-banner div { display: flex; gap: 10px; align-items: baseline; }
 .session-banner span { color: var(--muted); font-size: 12px; }
-.control-row { display: grid; grid-template-columns: 165px 125px minmax(190px, 1fr); gap: 10px; margin-bottom: 20px; }
+.control-row { display: grid; grid-template-columns: 155px 120px 130px minmax(190px, 1fr); gap: 10px; margin-bottom: 20px; }
 .select-wrap select, .search { height: 43px; margin: 0; border: 1px solid var(--line-dark); border-radius: 3px; background: var(--surface); }
 .select-wrap select { width: 100%; padding: 0 11px; color: #30333a; }
 .search { display: flex; align-items: center; gap: 8px; padding: 0 11px; }
@@ -149,6 +149,8 @@ fieldset { padding: 16px; border: 1px solid var(--line); }
   .brand strong { font-size: 13px; }
   .main-column { padding-inline: 20px; }
   .detail-content { padding-inline: 20px; }
+  .control-row { grid-template-columns: 1fr 1fr; }
+  .search { grid-column: 1 / -1; }
 }
 @media (max-width: 880px) {
   .workspace-shell { grid-template-columns: 82px minmax(0, 1fr); }
