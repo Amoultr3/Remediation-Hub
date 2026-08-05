@@ -8,7 +8,7 @@
   <title>Remediation Hub</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=1.5.0">
+  <link rel="stylesheet" href="styles.css?v=1.6.0">
 </head>
 <body>
   <div class="workspace-shell">
@@ -27,7 +27,7 @@
 
       <div class="sidebar-bottom">
         <button class="nav-item muted" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
-        <span class="version-label">Version 1.5 · Organized sessions</span>
+        <span class="version-label">Version 1.6 · Focus Review sessions</span>
       </div>
     </aside>
 
@@ -107,9 +107,10 @@
       </div>
       <input id="questionId" type="hidden">
       <div class="two-column">
-        <label>Primary system <select id="systemInput"></select></label>
+        <label>Focus Review System <select id="systemInput"></select></label>
         <label>Session <input id="sessionTitleInput" placeholder="e.g., Kaplan Cardiovascular Test 1"></label>
       </div>
+      <label>Resource <input id="resourceInput" placeholder="Kaplan, Saunders, textbook name…"></label>
       <label>Subcategory tags <input id="tagsInput" placeholder="e.g., aneurysm, anatomy & physiology, priority care"><small>Separate multiple tags with commas.</small></label>
       <label>Topic or modifier <input id="topicInput" placeholder="Optional: a more specific topic"></label>
       <label>Question <textarea id="questionInput" rows="4" required placeholder="Paste or type the question"></textarea></label>
@@ -147,6 +148,6 @@
   </dialog>
 
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="app-v1.5.js?v=1.5.0"></script>
+  <script src="app-v1.6.js?v=1.6.0"></script>
 </body>
 </html>
