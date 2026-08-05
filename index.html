@@ -8,7 +8,7 @@
   <title>Remediation Hub</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=1.4.0">
+  <link rel="stylesheet" href="styles.css?v=1.5.0">
 </head>
 <body>
   <div class="workspace-shell">
@@ -27,7 +27,7 @@
 
       <div class="sidebar-bottom">
         <button class="nav-item muted" type="button"><span class="nav-icon">⚙</span><span>Settings</span></button>
-        <span class="version-label">Version 1.4 · Clean update</span>
+        <span class="version-label">Version 1.5 · Organized sessions</span>
       </div>
     </aside>
 
@@ -48,8 +48,9 @@
 
         <div class="control-row">
           <label class="select-wrap"><span class="sr-only">Question status</span>
-            <select id="statusFilter"><option value="all">All records</option><option value="review">Needs review</option><option value="mastered">Mastered</option></select>
+            <select id="statusFilter"><option value="all">All statuses</option><option value="ungraded">Ungraded</option><option value="incorrect">Incorrect</option><option value="correct">Correct</option><option value="mastered">Remediated</option></select>
           </label>
+          <label class="select-wrap"><span class="sr-only">Body system</span><select id="systemFilter"><option value="all">All systems</option></select></label>
           <button id="sessionBtn" class="secondary">Start session</button>
           <button id="exportSessionBtn" class="secondary">Export session</button>
           <label class="search"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Search questions or topics..."></label>
@@ -105,24 +106,27 @@
         <button type="button" id="closeDialogBtn" class="icon-button" aria-label="Close">×</button>
       </div>
       <input id="questionId" type="hidden">
-      <label>Topic <input id="topicInput" placeholder="e.g., Cardiac, Pharmacology"></label>
+      <div class="two-column">
+        <label>Primary system <select id="systemInput"></select></label>
+        <label>Session <input id="sessionTitleInput" placeholder="e.g., Kaplan Cardiovascular Test 1"></label>
+      </div>
+      <label>Subcategory tags <input id="tagsInput" placeholder="e.g., aneurysm, anatomy & physiology, priority care"><small>Separate multiple tags with commas.</small></label>
+      <label>Topic or modifier <input id="topicInput" placeholder="Optional: a more specific topic"></label>
       <label>Question <textarea id="questionInput" rows="4" required placeholder="Paste or type the question"></textarea></label>
 
       <fieldset>
         <legend>Answer choices</legend>
-        <p class="field-help">Select one circle for your answer and one check for the correct answer.</p>
+        <p class="field-help">Select one circle for your answer and one check for the correct answer. Leave the key blank until remediation.</p>
+        <label class="select-all-line"><input id="selectAllInput" type="checkbox"> Select all that apply</label>
         <div class="choice-key"><span>Mine</span><span>Key</span><span>Answer choice</span></div>
         <div id="choicesEditor"></div>
         <button type="button" id="addChoiceBtn" class="text-button">+ Add another choice</button>
       </fieldset>
 
-      <div class="two-column">
-        <label>Status
-          <select id="statusInput"><option value="review">Needs review</option><option value="mastered">Mastered</option></select>
-        </label>
-      </div>
       <label>Why did you choose your answer? <textarea id="reasoningInput" rows="3" placeholder="Write what you were thinking"></textarea></label>
+      <label>Kaplan rationale <textarea id="rationaleInput" rows="4" placeholder="Paste or type why the correct answer is right"></textarea></label>
       <label>What clue did you miss or notice? <textarea id="clueInput" rows="2" placeholder="Optional"></textarea></label>
+      <label>Remediation notes <textarea id="remediationInput" rows="4" placeholder="What do you need to remember next time?"></textarea></label>
       <label>Additional notes <textarea id="notesInput" rows="3" placeholder="Optional"></textarea></label>
       <label class="attachment-field">Add an image or diagram <input id="attachmentInput" type="file" accept="image/*"><small>One image, up to 1.5 MB. Stored only on this device in Version 1.</small></label>
       <div id="attachmentPreview" class="attachment-preview hidden"></div>
@@ -143,6 +147,6 @@
   </dialog>
 
   <div id="toast" role="status" aria-live="polite"></div>
-  <script src="app-v1.4.js?v=1.4.0"></script>
+  <script src="app-v1.5.js?v=1.5.0"></script>
 </body>
 </html>

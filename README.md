@@ -1,19 +1,7 @@
-# Remediation Hub — Version 1.4 Clean Update
+# Remediation Hub — Version 1.5 Organized Sessions
 
-This upload-ready static PWA is designed for GitHub Pages.
+This upload-ready GitHub Pages PWA organizes nursing questions as Primary system → Session → Questions, with optional subcategory tags.
 
-## Included
+Version 1.5 includes ungraded/correct/incorrect/remediated states, Kaplan rationale and remediation fields, session export, search, system/status filters, image attachments, and compatibility with the v1.5 Chrome capture panel.
 
-- Practical three-panel study workspace on desktop
-- Focused record details on mobile
-- Question and answer-choice capture
-- Selected and correct answers
-- Reasoning, missed clues, and notes
-- Image or diagram attachments
-- Study sessions, session grading, and one-click session export
-- Search, filters, and mastery status
-- Local browser saving and offline support
-
-Upload every item in this folder to the root of the `Remediation-Hub` repository and replace matching files. The new `app-v1.4.js` must sit beside `index.html`. Existing questions are preserved because this update keeps the same local storage key (`remediationHub.v1`).
-
-After GitHub Pages deploys, the lower-left corner should read `Version 1.4 · Clean update`. Clicking **Export session** immediately downloads the most recent session as JSON. This package does not contain the Chrome extension.
+Upload every item in this folder to the root of the `Remediation-Hub` repository and replace matching files. Existing questions are preserved because this update keeps the same local storage key (`remediationHub.v1`). Do not clear Local Storage.
